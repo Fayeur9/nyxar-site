@@ -1,0 +1,108 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    name: Tests Jest (backend) + lint + audit
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: nyxar_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -u root -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in $(seq 1 30); do
+            if mysqladmin ping -h 127.0.0.1 -u root -proot --silent; then
+              echo "MySQL is up"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "MySQL did not become ready in time"
+          exit 1
+
+      - name: Generate .env for backend (CI values)
+        working-directory: backend
+        run: |
+          cat > .env <<'EOF'
+          DB_HOST=127.0.0.1
+          DB_PORT=3306
+          DB_NAME=nyxar_test
+          DB_USER=root
+          DB_PASSWORD=root
+          JWT_SECRET=ci-secret-github-actions
+          NODE_ENV=test
+          PORT=5177
+          EOF
+          cp .env .env.test
+
+      - name: Initialize test database schema
+        working-directory: backend
+        run: node db-cli.js init
+
+      - name: Seed init data (roles, admin)
+        working-directory: backend
+        run: node db-cli.js setup
+
+      - name: Run Jest integration tests
+        working-directory: backend
+        run: npm test
+
+      - name: Lint frontend (ESLint)
+        working-directory: frontend
+        run: npx eslint .
+
+      - name: Security audit — root
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Security audit — backend
+        working-directory: backend
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Security audit — frontend
+        working-directory: frontend
+        run: npm audit --audit-level=high
+        continue-on-error: true
