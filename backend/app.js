@@ -42,9 +42,17 @@ const devOrigins = [
     'http://127.0.0.1:5174',
     'http://127.0.0.1:5175'
 ]
-const prodOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-    : []
+// Railway expose automatiquement RAILWAY_PUBLIC_DOMAIN avec le domaine du service.
+// On l'ajoute aux origines autorisées pour que le front hébergé same-origin passe CORS.
+const railwayOrigin = process.env.RAILWAY_PUBLIC_DOMAIN
+    ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
+    : null
+const prodOrigins = [
+    ...(railwayOrigin ? [railwayOrigin] : []),
+    ...(process.env.ALLOWED_ORIGINS
+        ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+        : [])
+]
 
 app.use(cors({
     origin: function(origin, callback) {
