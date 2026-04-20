@@ -1,0 +1,150 @@
+/* ===== Hero Banner Carousel ===== */
+.hero-banner {
+    margin-top: 3rem;
+    position: relative;
+    width: 98% !important;
+    height: 80vh;
+    min-height: 500px;
+    max-height: 900px;
+    justify-self: center;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+
+.hero-banner__slider {
+    width: 100%;
+    height: 100%;
+    border-radius: 24px;
+}
+
+.hero-banner__slide {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+/* Gradient overlay pour transition douce vers le contenu */
+.hero-banner__slide::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(10, 14, 26, 0) 0%,
+        rgba(10, 14, 26, 0.2) 50%,
+        rgba(10, 14, 26, 0.95) 100%
+    );
+    pointer-events: none;
+}
+
+/* Titre optionnel sur le banner */
+.hero-banner__overlay {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 2;
+    width: 90%;
+    max-width: 800px;
+}
+
+.hero-banner__title {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    margin: 0;
+}
+
+/* ===== Swiper Pagination ===== */
+.hero-banner .swiper-pagination {
+    bottom: 100px !important;
+}
+
+.hero-banner .swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.4);
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+.hero-banner .swiper-pagination-bullet-active {
+    background: var(--accent-primary);
+    transform: scale(1.2);
+}
+
+/* ===== Flèche de scroll animée ===== */
+.hero-banner__scroll-arrow {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-banner__arrow {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border-right: 3px solid white;
+    border-bottom: 3px solid white;
+    transform: rotate(45deg);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.hero-banner__scroll-arrow:hover .hero-banner__arrow {
+    opacity: 1;
+    border-color: var(--accent-primary);
+    transform: rotate(45deg) scale(1.1);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .hero-banner {
+        height: 70vh;
+        min-height: 400px;
+        max-height: 700px;
+    }
+
+    .hero-banner .swiper-pagination {
+        bottom: 80px !important;
+    }
+
+    .hero-banner__scroll-arrow {
+        bottom: 30px;
+    }
+
+    .hero-banner__arrow {
+        width: 20px;
+        height: 20px;
+    }
+
+    .hero-banner__overlay {
+        bottom: 25%;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-banner {
+        height: 60vh;
+        min-height: 350px;
+    }
+
+    .hero-banner .swiper-pagination-bullet {
+        width: 10px;
+        height: 10px;
+    }
+}

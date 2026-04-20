@@ -1,0 +1,844 @@
+/* ========================================
+   FORMULAIRES - Styles globaux
+   ======================================== */
+
+/* ===== Typographie ===== */
+h1 {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 3rem;
+    margin: 0 0 var(--spacing-xl) 0;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+}
+
+h2 {
+    color: var(--text-primary);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 var(--spacing-md) 0;
+}
+
+h3 {
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 var(--spacing-lg) 0;
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--accent-primary);
+}
+
+h4 {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 var(--spacing-md) 0;
+}
+
+/* ===== Layout ===== */
+.l-form-page,
+.form-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+    width: 100%;
+}
+
+.l-form-page--narrow,
+.add-game-page {
+    max-width: 640px;
+}
+
+.l-form-stack,
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+.l-form-stack--fields,
+.form-group-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.l-form-grid,
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+}
+
+.l-form-grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.l-form-grid--media,
+.form-row-top {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: var(--spacing-xl);
+    align-items: flex-start;
+}
+
+/* ===== Form Header ===== */
+.c-form-header,
+.form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-xl);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-xl);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+    gap: var(--spacing-lg);
+}
+
+.c-form-header::before,
+.form-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--accent-gradient);
+}
+
+.c-form-header h1,
+.c-form-header h2,
+.form-header h1,
+.form-header h2 {
+    flex: 1;
+    margin: 0;
+}
+
+.c-form-header__actions,
+.form-header-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+}
+
+.c-form-header__subtitle,
+.form-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ===== Card & Sections ===== */
+.c-form-shell,
+.form-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-2xl);
+    box-shadow: var(--shadow-md);
+}
+
+.c-form-section,
+.form-section {
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+}
+
+.c-form-section h3,
+.form-section h3 {
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-lg) 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--accent-primary);
+}
+
+/* ===== Form Fields ===== */
+.f-field,
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.f-field label,
+.form-group label {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.f-field input,
+.f-field textarea,
+.f-field select,
+.form-group input,
+.form-group textarea,
+.form-group select {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all var(--transition-base);
+}
+
+.f-field input::placeholder,
+.f-field textarea::placeholder,
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.f-field input:focus,
+.f-field textarea:focus,
+.f-field select:focus,
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.f-field textarea,
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* ===== Color Picker ===== */
+.c-form-color-picker,
+.color-picker-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.c-form-color-picker__input,
+.color-picker-wrapper input[type="color"] {
+    width: 80px;
+    height: 50px;
+    padding: 4px;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.c-form-color-picker__value,
+.color-value {
+    color: var(--text-secondary);
+    font-family: monospace;
+    font-size: 1rem;
+    background: var(--bg-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.c-form-color-picker--inline,
+.color-picker-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.c-form-color-picker--inline .c-form-color-picker__input,
+.color-picker-row .color-input {
+    width: 60px;
+    height: 40px;
+    padding: 2px;
+}
+
+/* ===== Color Preview Cells ===== */
+.c-form-color-preview,
+.color-preview-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.c-form-color-preview__dot,
+.color-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.c-form-color-preview__code,
+.color-code {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* ===== Image Upload ===== */
+.c-form-media,
+.image-group {
+    flex-shrink: 0;
+}
+
+.c-form-image-upload,
+.image-upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border: 2px dashed var(--accent-primary);
+    color: var(--accent-primary);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-align: center;
+    font-weight: 600;
+    transition: all var(--transition-base);
+    position: relative;
+    width: 100%;
+    height: auto;
+}
+
+.c-form-image-upload__label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-secondary);
+    text-align: left;
+}
+
+.c-form-image-upload:hover,
+.image-upload-label:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--accent-secondary);
+    transform: scale(1.02);
+}
+
+.c-form-media .c-form-image-upload,
+.image-group .image-upload-label {
+    aspect-ratio: 1 / 1;
+    max-height: 280px;
+    min-height: 280px;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.c-form-image-upload__preview,
+.preview-in-label {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.c-form-image-preview,
+.image-preview {
+    width: 100%;
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: var(--radius-md);
+    object-fit: contain;
+    margin-top: var(--spacing-sm);
+    display: block;
+}
+
+.c-form-uploading,
+.uploading {
+    display: block;
+    color: var(--accent-primary);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.c-form-image-placeholder,
+.image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    width: 100%;
+    height: 100%;
+}
+
+.c-form-image-placeholder__initial,
+.image-placeholder .placeholder-initial {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+}
+
+.c-form-image-placeholder__text,
+.image-placeholder .placeholder-text {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+/* ===== Helper States ===== */
+.input-disabled {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-muted) !important;
+    cursor: not-allowed !important;
+}
+
+.c-form-help,
+.field-help {
+    margin: var(--spacing-sm) 0 0 0;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* ===== Form Actions ===== */
+.c-form-actions,
+.form-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: flex-end;
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
+}
+
+.c-form-toolbar,
+.form-actions-top {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.c-form-feedback--error,
+.error,
+.error-message {
+    color: var(--error);
+    padding: var(--spacing-md);
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+    border-left: 4px solid var(--error);
+    font-weight: 500;
+}
+
+.c-form-feedback--success,
+.success,
+.success-message {
+    color: var(--success);
+    padding: var(--spacing-md);
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+    border-left: 4px solid var(--success);
+    font-weight: 500;
+}
+
+.c-form-state,
+.form-loading {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.c-form-checkbox,
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    user-select: none;
+    font-weight: 500;
+}
+
+.c-form-checkbox__input,
+.checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--accent-primary);
+}
+
+/* ===== Nominee Selection ===== */
+.c-form-nominee-grid,
+.nominees-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.c-form-nominee-card,
+.nominee-button {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.c-form-nominee-card:hover:not(:disabled),
+.nominee-button:hover:not(:disabled) {
+    border-color: var(--accent-primary);
+    background: var(--bg-card);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow);
+}
+
+.c-form-nominee-card.is-selected,
+.nominee-button.selected {
+    border-color: var(--accent-primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.c-form-nominee-card.is-selected::before,
+.nominee-button.selected::before {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    background: var(--accent-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.c-form-nominee-card:disabled:not(.is-selected),
+.nominee-button:disabled:not(.selected) {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.c-form-nominee-card__image,
+.nominee-button-image {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    border: 1px solid var(--border-color);
+}
+
+.c-form-nominee-card__name,
+.nominee-button-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.c-form-nominee-selection,
+.selected-nominees-display {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.c-form-nominee-selection h5,
+.selected-nominees-display h5 {
+    margin: 0 0 var(--spacing-md) 0;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.c-form-nominee-selection__list,
+.selected-nominees-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.c-form-nominee-selection__item,
+.selected-nominee {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    transition: all var(--transition-base);
+}
+
+.c-form-nominee-selection__item:hover,
+.selected-nominee:hover {
+    border-color: var(--accent-primary);
+    background: var(--bg-card-hover);
+}
+
+.c-form-nominee-selection__badge,
+.order-badge {
+    width: 32px;
+    height: 32px;
+    background: var(--accent-gradient);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.c-form-nominee-selection__image,
+.selected-nominee-image {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.c-form-nominee-selection__info,
+.selected-nominee-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.c-form-nominee-selection__name,
+.selected-nominee-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.c-form-nominee-selection__detail,
+.selected-nominee-detail {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* ===== Custom Nominee Add ===== */
+.c-form-custom-nominee-add {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    align-items: flex-end;
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    margin-bottom: var(--spacing-md);
+}
+
+.c-form-custom-nominee-add .f-field {
+    flex: 1;
+    min-width: 150px;
+}
+
+/* ===== Disabled States ===== */
+input:disabled,
+textarea:disabled,
+select:disabled,
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .l-form-grid,
+    .l-form-grid--3,
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .l-form-grid--media,
+    .form-row-top {
+        grid-template-columns: 1fr;
+    }
+
+    .c-form-shell,
+    .form-card {
+        padding: var(--spacing-lg);
+    }
+
+    .c-form-header,
+    .form-header {
+        flex-direction: column;
+        gap: var(--spacing-lg);
+        align-items: stretch;
+    }
+
+    .c-form-header h1,
+    .c-form-header h2,
+    .form-header h1,
+    .form-header h2 {
+        width: 100%;
+        text-align: left;
+    }
+
+    .c-form-header__actions,
+    .form-header-buttons {
+        width: 100%;
+        flex-direction: column-reverse;
+    }
+
+    .c-form-header__actions .btn,
+    .form-header-buttons button {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .c-form-actions,
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .c-form-actions .btn,
+    .form-actions button {
+        width: 100%;
+    }
+
+    .c-form-media .c-form-image-upload,
+    .image-group .image-upload-label {
+        min-height: 200px;
+    }
+
+    .c-form-nominee-grid,
+    .nominees-buttons-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: var(--spacing-sm);
+    }
+
+    .c-form-nominee-card__image,
+    .nominee-button-image {
+        width: 60px;
+        height: 60px;
+    }
+
+    .c-form-nominee-card__name,
+    .nominee-button-name {
+        font-size: 0.8rem;
+    }
+
+    .c-form-nominee-selection__image,
+    .selected-nominee-image {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* ===== Dual Range Slider ===== */
+.dual-range {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.dual-range__track-wrapper {
+    position: relative;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    touch-action: none;
+}
+
+.dual-range__track {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: var(--border-hover);
+    border-radius: var(--radius-full);
+}
+
+.dual-range__fill {
+    position: absolute;
+    height: 5px;
+    background: var(--accent-primary);
+    border-radius: var(--radius-full);
+}
+
+.dual-range__thumb {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    border: 3px solid var(--bg-card);
+    box-shadow: 0 0 0 1px var(--accent-primary), var(--shadow-md);
+    transform: translateX(-50%);
+    cursor: grab;
+    transition: background 0.15s, transform 0.15s;
+}
+
+.dual-range__thumb:hover {
+    background: var(--accent-secondary);
+    box-shadow: 0 0 0 1px var(--accent-secondary), var(--shadow-md);
+    transform: translateX(-50%) scale(1.15);
+}
+
+.dual-range__track-wrapper:active .dual-range__thumb {
+    cursor: grabbing;
+}
+
+/* Valeurs affichées sous le slider */
+.dual-range__values {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dual-range__value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: var(--radius-sm);
+    padding: 2px 10px;
+    font-variant-numeric: tabular-nums;
+}

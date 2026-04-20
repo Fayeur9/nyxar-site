@@ -1,0 +1,598 @@
+/* ========================================
+   AUTH FORM - Layout 2 colonnes avec arc
+   ======================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.authPage {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  background: var(--bg-html);
+  padding: 20px;
+}
+
+.authContainer {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  height: 500px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  clip-path: inset(0 round var(--radius-lg));
+  box-shadow: var(--shadow-xl);
+}
+
+.backToSite {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.backToSite svg {
+  width: 18px;
+  height: 18px;
+}
+
+.backToSite:hover {
+  color: var(--accent-primary);
+  transform: translateX(-4px);
+}
+
+/* ========================================
+   TOGGLE BOX - Panneau accent avec arc
+   ======================================== */
+
+.toggleBox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Arc circulaire (pseudo-element) */
+.toggleBox::before {
+  content: '';
+  position: absolute;
+  width: 250%;
+  height: 250%;
+  top: -75%;
+  left: 50%;
+  background: var(--accent-gradient);
+  border-radius: 50%;
+  transform: translateX(0);
+  transition: 1.1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.authContainer.mode-register .toggleBox::before {
+  left: -200%;
+}
+
+/* Panels de texte + boutons */
+.togglePanel {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  text-align: center;
+  pointer-events: auto;
+}
+
+.togglePanel h2 {
+  font-size: 28px;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.togglePanel p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 90%;
+  margin-bottom: 30px;
+}
+
+.toggleButton {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-family: inherit;
+}
+
+.toggleButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+/* Toggle Left - WELCOME (gauche en mode register) */
+.toggleLeft {
+  left: 0;
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 1s ease, transform 1s ease;
+  z-index: 3;
+}
+
+.authContainer.mode-register .toggleLeft {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+/* Toggle Right - WELCOME BACK (droite en mode login) */
+.toggleRight {
+  right: 0;
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 1s ease, transform 1s ease;
+  z-index: 3;
+}
+
+.authContainer.mode-register .toggleRight {
+  opacity: 0;
+  transform: translateX(50px);
+  pointer-events: none;
+}
+
+/* ========================================
+   FORM BOXES - 2 colonnes
+   ======================================== */
+
+.formBox {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  padding: 60px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* background: var(--bg-primary); */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(100%);
+  transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2;
+}
+
+.formBox.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+/* Login (gauche) */
+.formBox.login {
+  left: 0;
+  transform: translateX(-100%);
+}
+
+.formBox.login.active {
+  transform: none;
+}
+
+/* Register (droite) */
+.formBox.register {
+  right: 0;
+  transform: translateX(100%);
+}
+
+.formBox.register.active {
+  transform: none;
+}
+
+.formBox h2 {
+  font-size: 36px;
+  color: var(--text-primary);
+  margin-bottom: 30px;
+  font-weight: 400;
+}
+
+/* ========================================
+   ANIMATION CONTAINER - Stagger
+   ======================================== */
+
+.animationContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Animation items - Stagger par direction */
+.animation {
+  transition: transform 1s ease-out, opacity 1s ease-out;
+  transition-delay: calc(0.1s + 0.08s * var(--i, 0));
+}
+
+/* Stagger LOGIN (depuis la gauche) */
+.formBox.login .animation {
+  transform: translateX(-120%);
+  opacity: 0;
+}
+
+.formBox.login.active .animationContainer.active .animation {
+  transform: none;
+  opacity: 1;
+}
+
+/* Stagger REGISTER (depuis la droite) */
+.formBox.register .animation {
+  transform: translateX(120%);
+  opacity: 0;
+}
+
+.formBox.register.active .animationContainer.active .animation {
+  transform: none;
+  opacity: 1;
+}
+
+/* ========================================
+   INPUT & BUTTONS
+   ======================================== */
+
+.inputGroup {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 12px 15px 12px 40px;
+  border: none;
+  border-bottom: 2px solid var(--border-hover);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 14px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.inputGroup input::placeholder {
+  color: var(--text-muted);
+}
+
+.inputGroup input:focus {
+  border-bottom-color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+
+.inputGroup input:focus::placeholder {
+  color: var(--accent-primary);
+}
+
+.inputGroup input:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.inputGroup .icon {
+  position: absolute;
+  left: 10px;
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  stroke-width: 2;
+  pointer-events: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.inputGroup input:focus ~ .icon {
+  color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+
+.inputGroup .toggle-visibility {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.inputGroup .toggle-visibility:hover:not(:disabled) {
+  color: var(--text-primary);
+  transform: scale(1.05);
+}
+
+.inputGroup .toggle-visibility:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  margin-top: 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--accent-gradient);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-md);
+  font-family: inherit;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--accent-gradient-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow-hover);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ========================================
+   TOGGLE TEXT & LINKS
+   ======================================== */
+
+.toggleText {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.link {
+  color: var(--accent-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.link:hover {
+  color: var(--accent-secondary);
+  text-decoration: underline;
+}
+
+/* ========================================
+   MESSAGES
+   ======================================== */
+
+.message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  animation: slideIn 0.3s ease;
+  z-index: 1000;
+}
+
+.message.error {
+  background-color: var(--error);
+  color: #fff;
+}
+
+.message.success {
+  background-color: var(--success);
+  color: #fff;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   REDUCED MOTION
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .formBox,
+  .toggleBox::before,
+  .togglePanel,
+  .animation,
+  .inputGroup input {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .formBox {
+    transform: translateX(0) !important;
+    pointer-events: auto;
+  }
+
+  .togglePanel {
+    opacity: 1;
+    transform: none;
+  }
+
+  .toggleLeft,
+  .toggleRight {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .authContainer.mode-register .toggleLeft {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .authContainer.mode-register .toggleRight {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .authContainer {
+    height: auto;
+    min-height: 600px;
+  }
+
+  .formBox {
+    position: static;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(20px) !important;
+    max-height: 0;
+    clip-path: inset(0);
+    transition: all 0.5s ease;
+  }
+
+  .formBox.active {
+    opacity: 1;
+    transform: translateY(0) !important;
+    max-height: 500px;
+  }
+
+  .toggleBox {
+    position: static;
+  }
+
+  .toggleBox::before {
+    display: none;
+  }
+
+  .togglePanel {
+    position: static;
+    width: 100%;
+    opacity: 0;
+    transform: none !important;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, opacity 0.5s ease;
+  }
+
+  .toggleLeft,
+  .toggleRight {
+    opacity: 0;
+    transform: none !important;
+  }
+
+  .authContainer.mode-register .toggleLeft {
+    opacity: 1;
+    max-height: 250px;
+  }
+
+  .toggleRight {
+    display: none;
+  }
+
+  .formBox h2 {
+    font-size: 24px;
+  }
+
+  .togglePanel h2 {
+    font-size: 20px;
+  }
+}
+
+/* ========================================
+   ÉCRAN DE CHARGEMENT
+   ======================================== */
+
+.loadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 14, 26, 0.97);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--border-hover);
+  border-top-color: var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loader p {
+  color: var(--text-primary);
+  font-size: 16px;
+  text-align: center;
+}
+
+/* Animation de fade out du formulaire */
+.authContainer.fading-out {
+  animation: fadeOutForm 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeOutForm {
+  to {
+    opacity: 0;
+  }
+}

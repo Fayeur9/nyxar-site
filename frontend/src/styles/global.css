@@ -1,0 +1,115 @@
+@import './variables.css';
+@import './typography.css';
+@import './cards.css';
+@import './layout-utilities.css';
+@import './layout.css';
+@import './landing.css';
+@import './buttons.css';
+@import './form/forms.css';
+@import './pages/admin.css';
+@import './components/modals.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: var(--font-body);
+  line-height: 1.8;
+  font-weight: 400;
+  color: var(--text-primary);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  margin: var(--spacing-lg);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  background-image:
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.06) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(99, 102, 241, 0.06) 0px, transparent 50%),
+    radial-gradient(at 25% 30%, rgba(139, 92, 246, 0.07) 0px, transparent 50%),
+    radial-gradient(at 75% 25%, rgba(6, 182, 212, 0.07) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+    radial-gradient(at 80% 70%, rgba(139, 92, 246, 0.06) 0px, transparent 50%),
+    radial-gradient(at 20% 70%, rgba(6, 182, 212, 0.07) 0px, transparent 50%),
+    radial-gradient(at 60% 15%, rgba(99, 102, 241, 0.06) 0px, transparent 50%),
+    radial-gradient(at 35% 65%, rgba(139, 92, 246, 0.05) 0px, transparent 50%),
+    radial-gradient(at 85% 40%, rgba(6, 182, 212, 0.06) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+html, body, #root {
+  width: 100%;
+  min-height: 100%;
+  border-radius: 24px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+a:hover {
+  color: var(--accent-primary);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: all var(--transition-base);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+input, textarea, select {
+  font-family: inherit;
+  color: inherit;
+}
+
+::selection {
+  background-color: var(--accent-primary);
+  color: white;
+}
+
+/* Scrollbar minimaliste */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg-card) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-card);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bg-card-hover);
+}

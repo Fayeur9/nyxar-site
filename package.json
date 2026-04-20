@@ -1,0 +1,24 @@
+{
+  "name": "site_nyxar",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Site web NYXAR - Frontend + Backend",
+  "scripts": {
+    "dev": "clear && node scripts/banner.js && concurrently --prefix none \"node --watch backend/server.js\" \"npm --silent --prefix frontend run dev -- --logLevel warn\"",
+    "dev:front": "npm run dev --prefix frontend -- --logLevel warn",
+    "dev:back": "node --watch backend/server.js",
+    "start": "node backend/server.js",
+    "db:init": "node backend/db-cli.js init",
+    "db:purge": "node backend/db-cli.js purge",
+    "db:setup": "node backend/db-cli.js setup",
+    "db:setup:test": "node backend/db-cli.js setup:test",
+    "db:reset": "node backend/db-cli.js reset",
+    "db:reset:full": "node backend/db-cli.js reset:full",
+    "db:drop": "node backend/db-cli.js drop",
+    "install:all": "npm install && npm install --prefix frontend && npm install --prefix backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3"
+  }
+}

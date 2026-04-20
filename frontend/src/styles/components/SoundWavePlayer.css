@@ -1,0 +1,73 @@
+/* =============================================
+   SoundWavePlayer — Lecteur audio waveform
+   ============================================= */
+
+.swp {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    width: 100%;
+    padding: var(--spacing-xs) 0;
+}
+
+/* Bouton play/pause */
+.swp__play {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.swp__play:hover {
+    background: var(--accent-secondary);
+    transform: scale(1.08);
+}
+
+.swp__play--active {
+    background: var(--accent-secondary);
+}
+
+/* Conteneur waveform */
+.swp__wave {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 36px;
+    cursor: pointer;
+    padding: 2px 0;
+}
+
+.swp__bar {
+    flex: 1;
+    min-width: 2px;
+    background: var(--border-color);
+    border-radius: 2px;
+    transition: background 0.1s ease;
+}
+
+.swp__bar--filled {
+    background: var(--accent-primary);
+}
+
+.swp__wave:hover .swp__bar:not(.swp__bar--filled) {
+    background: var(--text-muted);
+}
+
+/* Timer */
+.swp__time {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    min-width: 70px;
+    text-align: right;
+}
