@@ -4,6 +4,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { databaseExists, createDatabase, createAllTables } from './schema.js'
 import { ensureMiniGamesSettingsDefaults } from './utils/miniGames.js'
+import { seedInitData } from './seed-init.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -35,6 +36,15 @@ export async function initializeDatabase() {
 
         // Garantir la présence des configurations par défaut pour les mini-jeux
         await ensureMiniGamesSettingsDefaults()
+
+        // Seed initial si aucun utilisateur (première exécution après création des tables).
+        // Évite de reseeder à chaque redémarrage tout en garantissant un site fonctionnel à froid.
+        const [[{ count }]] = await pool.query('SELECT COUNT(*) AS count FROM users')
+        if (count === 0) {
+            console.log('\n\t⏳ Base vide détectée, insertion des données initiales...\n')
+            await seedInitData()
+            somethingCreated = true
+        }
 
         // Affichage minimal si tout existe
         if (!somethingCreated) {
