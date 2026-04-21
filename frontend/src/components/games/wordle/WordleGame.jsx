@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { AuthContext } from '../../../context/AuthContext.jsx'
+import { AuthContext } from '../../../context/AuthContext'
 import { useWordle } from './useWordle.js'
 import { STORAGE_HELP_KEY } from './wordleUtils.js'
 import WordleBoard from './WordleBoard.jsx'
@@ -12,16 +12,15 @@ export default function WordleGame() {
     const { user, token } = useContext(AuthContext)
     const wordle = useWordle(user, token)
 
-    const [showHelp, setShowHelp] = useState(false)
+    const [showHelp, setShowHelp] = useState(() => !localStorage.getItem(STORAGE_HELP_KEY))
     const [showStats, setShowStats] = useState(false)
 
-    // Afficher l'aide au 1er lancement
+    // Marquer l'aide comme vue au 1er lancement
     useEffect(() => {
-        if (!localStorage.getItem(STORAGE_HELP_KEY)) {
-            setShowHelp(true)
+        if (showHelp) {
             localStorage.setItem(STORAGE_HELP_KEY, '1')
         }
-    }, [])
+    }, [showHelp])
 
     // Afficher les stats automatiquement en fin de partie
     useEffect(() => {

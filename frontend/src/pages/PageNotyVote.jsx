@@ -148,10 +148,6 @@ export default function PageNotyVote() {
         return players.filter(p => p.pseudo?.toLowerCase().includes(q))
     }, [players, searchQuery])
 
-    const selectedPlayers = useMemo(() => {
-        return votingState.map(playerId => players.find(p => p.id === playerId)).filter(Boolean)
-    }, [votingState, players])
-
     // Navigation circulaire prev/next
     const { prevCategoryId, nextCategoryId } = useMemo(() => {
         if (allCategories.length <= 1) return { prevCategoryId: null, nextCategoryId: null }

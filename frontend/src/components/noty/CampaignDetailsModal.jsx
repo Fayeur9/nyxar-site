@@ -15,20 +15,10 @@ function getStatus(campaign) {
     return { variant: 'active', label: 'En cours' }
 }
 
-// Convertit un titre de catégorie en nom de fichier (même logique que le backend)
-function titleToFilename(title) {
-    return title
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-zA-Z0-9]/g, '_')
-        .replace(/_+/g, '_')
-        .replace(/^_|_$/g, '')
-}
-
 // Modal pour les détails de la campagne
 const CampaignDetailsModal = React.memo(function CampaignDetailsModal({ campaignId, token, onClose }) {
     const [campaign, setCampaign] = useState(null)
     const [categories, setCategories] = useState([])
-    const [results, setResults] = useState([])
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [activeTab, setActiveTab] = useState('dashboard')
@@ -178,7 +168,6 @@ const CampaignDetailsModal = React.memo(function CampaignDetailsModal({ campaign
             )
             if (!resultsResponse.ok) throw new Error('Erreur récupération résultats')
             const resultsData = await resultsResponse.json()
-            setResults(resultsData)
             setCategories(resultsData)
 
             setError(null)
@@ -195,11 +184,10 @@ const CampaignDetailsModal = React.memo(function CampaignDetailsModal({ campaign
                         setCardsGenerated({ generated: cardsData.generated })
                     }
                 }
-            } catch (_) { /* silencieux */ }
+            } catch { /* silencieux */ }
         } catch (err) {
             setError(err.message)
             setCampaign(null)
-            setResults([])
             setCategories([])
         } finally {
             setLoading(false)
@@ -438,7 +426,7 @@ const CampaignDetailsModal = React.memo(function CampaignDetailsModal({ campaign
                 }
             )
             if (!response.ok) throw new Error('Erreur import catégories')
-            const data = await response.json()
+            await response.json()
             setShowImportModal(false)
             setSelectedImportIds(new Set())
             await fetchCampaignData()

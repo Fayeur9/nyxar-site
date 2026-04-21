@@ -9,7 +9,7 @@ import '../styles/pages/NotyPage.css'
 
 export default function PageNoty() {
     const { user, token } = useContext(AuthContext)
-    const { currentActiveCampaign, hasActiveCampaign, votingOpen, resultsPhase } = useContext(NotyCampaignContext)
+    const { currentActiveCampaign, hasActiveCampaign, resultsPhase } = useContext(NotyCampaignContext)
     const [hasPastCampaigns, setHasPastCampaigns] = useState(false)
     const [progress, setProgress] = useState(null)
     const [liveStats, setLiveStats] = useState(null)

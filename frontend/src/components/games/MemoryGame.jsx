@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext } from 'react'
-import { AuthContext } from '../../context/AuthContext.jsx'
+import { useState, useEffect, useContext, useCallback } from 'react'
+import { AuthContext } from '../../context/AuthContext'
 import { API_URL } from '../../services/api'
 import './MemoryGame.css'
 
@@ -74,55 +74,7 @@ export default function MemoryGame({ onGameOver, onScoreSaved }) {
         }
     }, [gameWon, user, token, scoreSaved, lastScore, onScoreSaved])
 
-    if (!user) {
-        return (
-            <div className="memory-game-container">
-                <div className="game-header">
-                    <h2>Memory Trackmania</h2>
-                </div>
-                <div className="game-area-wrapper">
-                    <div className="game-area">
-                        <div className="game-overlay">
-                            <div className="game-over-content">
-                                <h2>Connexion requise</h2>
-                                <p>Vous devez être connecté pour jouer à ce mini-jeu.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-
-    useEffect(() => {
-        initializeGame(currentLevel)
-
-        const storedPoints = localStorage.getItem(BEST_POINTS_STORAGE_KEY)
-        if (storedPoints) {
-            const parsedPoints = Number.parseInt(storedPoints, 10)
-            if (!Number.isNaN(parsedPoints)) {
-                setBestPoints(parsedPoints)
-                return
-            }
-        }
-
-        const legacyMoves = localStorage.getItem(LEGACY_MOVES_STORAGE_KEY)
-        if (legacyMoves) {
-            const parsedMoves = Number.parseInt(legacyMoves, 10)
-            if (!Number.isNaN(parsedMoves) && parsedMoves > 0) {
-                const convertedPoints = calculateScoreFromMoves(parsedMoves)
-                setBestPoints(convertedPoints)
-                localStorage.setItem(BEST_POINTS_STORAGE_KEY, convertedPoints.toString())
-                localStorage.removeItem(LEGACY_MOVES_STORAGE_KEY)
-            }
-        }
-    }, [])
-
-    useEffect(() => {
-        initializeGame(currentLevel)
-    }, [currentLevel])
-
-    const initializeGame = (level) => {
+    const initializeGame = useCallback((level) => {
         const levelConfig = levels[level]
         const cardsToUse = levelConfig.cards
 
@@ -146,7 +98,36 @@ export default function MemoryGame({ onGameOver, onScoreSaved }) {
         }
         setGameStarted(false)
         setGameWon(false)
-    }
+    }, [])
+
+    useEffect(() => {
+        initializeGame(currentLevel)
+
+        const storedPoints = localStorage.getItem(BEST_POINTS_STORAGE_KEY)
+        if (storedPoints) {
+            const parsedPoints = Number.parseInt(storedPoints, 10)
+            if (!Number.isNaN(parsedPoints)) {
+                setBestPoints(parsedPoints)
+                return
+            }
+        }
+
+        const legacyMoves = localStorage.getItem(LEGACY_MOVES_STORAGE_KEY)
+        if (legacyMoves) {
+            const parsedMoves = Number.parseInt(legacyMoves, 10)
+            if (!Number.isNaN(parsedMoves) && parsedMoves > 0) {
+                const convertedPoints = calculateScoreFromMoves(parsedMoves)
+                setBestPoints(convertedPoints)
+                localStorage.setItem(BEST_POINTS_STORAGE_KEY, convertedPoints.toString())
+                localStorage.removeItem(LEGACY_MOVES_STORAGE_KEY)
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    useEffect(() => {
+        initializeGame(currentLevel)
+    }, [currentLevel, initializeGame])
 
     const handleCardClick = (cardId) => {
         if (!gameStarted) setGameStarted(true);
@@ -217,6 +198,26 @@ export default function MemoryGame({ onGameOver, onScoreSaved }) {
         setScoreSaved(false);
         initializeGame(1);
     };
+
+    if (!user) {
+        return (
+            <div className="memory-game-container">
+                <div className="game-header">
+                    <h2>Memory Trackmania</h2>
+                </div>
+                <div className="game-area-wrapper">
+                    <div className="game-area">
+                        <div className="game-overlay">
+                            <div className="game-over-content">
+                                <h2>Connexion requise</h2>
+                                <p>Vous devez être connecté pour jouer à ce mini-jeu.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="memory-game">

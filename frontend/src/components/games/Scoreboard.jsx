@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { fetchScoreboard, resetScores } from '../../services/scores';
-import { AuthContext } from '../../context/AuthContext.jsx';
+import { AuthContext } from '../../context/AuthContext';
 
 // showAdminReset permet de contrôler si le bouton reset admin est affiché
 export default function Scoreboard({ game, showAdminReset = true, order = 'desc' }) {

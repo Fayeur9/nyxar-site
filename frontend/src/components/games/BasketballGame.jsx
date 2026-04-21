@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useContext } from 'react'
-import { AuthContext } from '../../context/AuthContext.jsx'
+import { AuthContext } from '../../context/AuthContext'
 import API_URL from '../../services/api.js'
 import './BasketballGame.css'
 

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function AddPlayerModal({ isOpen, onClose, onConfirm, lineUpId, token, players, loading, error, currentPlayers = [] }) {
+export default function AddPlayerModal({ isOpen, onClose, onConfirm, players, loading, error, currentPlayers = [] }) {
     const [selectedPlayer, setSelectedPlayer] = useState(null)
 
     // Filter out players already in the lineup

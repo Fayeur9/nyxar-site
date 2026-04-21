@@ -211,7 +211,9 @@ export function useWordle(user, token) {
 function saveGuestState(date, data) {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ date, ...data }))
-    } catch {}
+    } catch {
+        // localStorage indisponible (mode privé, quota dépassé) — silencieux
+    }
 }
 
 function loadGuestState(todayDate) {

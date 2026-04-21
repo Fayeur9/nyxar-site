@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API_URL } from '../services/api'
 import { resetAllGuessMapAttempts } from '../services/guessMap'
-import { AuthContext } from '../context/AuthContext.jsx'
+import { AuthContext } from '../context/AuthContext'
 import '../styles/pages/PageWeekPlanner.css'
 
 const DIFFICULTIES = [

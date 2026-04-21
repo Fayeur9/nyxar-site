@@ -17,8 +17,6 @@ const formatDateTime = (value) => {
 const zoneDisplayName = (zone) => zone?.name || 'N/A'
 
 export default function PlayerDetailsModal({ isOpen, player, statsState, onClose }) {
-    if (!isOpen || !player) return null
-
     const status = statsState?.status || 'idle'
     const data = statsState?.data || null
     const error = statsState?.error || null
@@ -30,11 +28,13 @@ export default function PlayerDetailsModal({ isOpen, player, statsState, onClose
         if (backendPlayer?.trackmaniaSlug) {
             return `${TRACKMANIA_BASE_URL}${encodeURIComponent(backendPlayer.trackmaniaSlug)}`
         }
-        if (player.trackmaniaLink) {
+        if (player?.trackmaniaLink) {
             return player.trackmaniaLink
         }
         return null
-    }, [backendPlayer?.trackmaniaSlug, player.trackmaniaLink])
+    }, [backendPlayer?.trackmaniaSlug, player?.trackmaniaLink])
+
+    if (!isOpen || !player) return null
 
     const zonePath = trackmania?.trophies?.zonePath || []
     const matchmakingEntries = trackmania?.matchmaking || []

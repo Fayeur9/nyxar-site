@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { API_URL } from '../../services/api'
+import useFetch from '../../hooks/useFetch'
 import '../../styles/components/Footer.css'
 
 // Liens des réseaux sociaux - À modifier avec vos vrais liens
@@ -12,23 +11,8 @@ const SOCIAL_LINKS = {
 }
 
 export default function Footer() {
-    const [sponsors, setSponsors] = useState([])
-
-    useEffect(() => {
-        fetchSponsors()
-    }, [])
-
-    const fetchSponsors = async () => {
-        try {
-            const response = await fetch(`${API_URL}/api/sponsors`)
-            if (response.ok) {
-                const data = await response.json()
-                setSponsors(data)
-            }
-        } catch (err) {
-            console.error('Erreur chargement sponsors:', err)
-        }
-    }
+    const { data } = useFetch('/api/sponsors')
+    const sponsors = data || []
 
     return (
         <footer className="footer">

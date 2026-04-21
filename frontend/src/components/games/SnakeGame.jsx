@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useContext } from 'react'
-import { AuthContext } from '../../context/AuthContext.jsx'
+import { AuthContext } from '../../context/AuthContext'
 import API_URL from '../../services/api.js'
 import { fetchMyScore } from '../../services/scores'
 import './SnakeGame.css'
@@ -22,7 +22,6 @@ export default function SnakeGame({ onGameOver, onScoreSaved }) {
     const [isPaused, setIsPaused] = useState(false)
     const [scoreSaved, setScoreSaved] = useState(false)
     const [bestScore, setBestScore] = useState(0)
-    const [, forceUpdate] = useState(0)
     const ARROW_KEYS = useRef(new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']))
 
     useEffect(() => {
@@ -67,31 +66,12 @@ export default function SnakeGame({ onGameOver, onScoreSaved }) {
         }
     }, [gameOver, score, onGameOver, onScoreSaved, user, token, scoreSaved])
 
-    if (!user) {
-        return (
-            <div className="snake-game-container">
-                <div className="game-header">
-                    <h2>Snake Trackmania</h2>
-                </div>
-                <div className="game-area-wrapper">
-                    <div className="game-area" style={{ width: GRID_SIZE * CELL_SIZE, height: GRID_SIZE * CELL_SIZE }}>
-                        <div className="game-overlay">
-                            <div className="game-over-content">
-                                <h2>Connexion requise</h2>
-                                <p>Vous devez être connecté pour jouer à ce mini-jeu.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-    
     const gameLoopRef = useRef(null)
     const directionQueueRef = useRef([])
-    const lastMoveTimeRef = useRef(Date.now())
-    const previousSnakeRef = useRef([{ x: 7, y: 7 }])
     const animationFrameRef = useRef(null)
+    const [nowMs, setNowMs] = useState(() => Date.now())
+    const [lastMoveTime, setLastMoveTime] = useState(0)
+    const [previousSnake, setPreviousSnake] = useState([{ x: 7, y: 7 }])
 
     const generateCheckpoint = useCallback(() => {
         let newCheckpoint
@@ -135,16 +115,16 @@ export default function SnakeGame({ onGameOver, onScoreSaved }) {
             newSnake.pop()
             return newSnake
         })
-    }, [direction, checkpoint, gameOver, isPaused, generateCheckpoint])
+    }, [direction, checkpoint, gameOver, isPaused, generateCheckpoint, onGameOver, score])
 
     useEffect(() => {
         const animate = () => {
             if (!gameOver && !isPaused) {
-                forceUpdate(n => n + 1)
+                setNowMs(Date.now())
             }
             animationFrameRef.current = requestAnimationFrame(animate)
         }
-        
+
         animationFrameRef.current = requestAnimationFrame(animate)
         return () => cancelAnimationFrame(animationFrameRef.current)
     }, [gameOver, isPaused])
@@ -208,8 +188,8 @@ export default function SnakeGame({ onGameOver, onScoreSaved }) {
         }
 
         gameLoopRef.current = setInterval(() => {
-            previousSnakeRef.current = [...snake]
-            lastMoveTimeRef.current = Date.now()
+            setPreviousSnake([...snake])
+            setLastMoveTime(Date.now())
             moveSnake()
         }, speed)
         
@@ -220,13 +200,33 @@ export default function SnakeGame({ onGameOver, onScoreSaved }) {
         setSnake([{ x: 7, y: 7 }])
         setDirection({ x: 1, y: 0 })
         directionQueueRef.current = []
-        previousSnakeRef.current = [{ x: 7, y: 7 }]
+        setPreviousSnake([{ x: 7, y: 7 }])
         setCheckpoint(generateCheckpoint())
         setGameOver(false)
         setScore(0)
         setSpeed(INITIAL_SPEED)
         setIsPaused(false)
         setScoreSaved(false)
+    }
+
+    if (!user) {
+        return (
+            <div className="snake-game-container">
+                <div className="game-header">
+                    <h2>Snake Trackmania</h2>
+                </div>
+                <div className="game-area-wrapper">
+                    <div className="game-area" style={{ width: GRID_SIZE * CELL_SIZE, height: GRID_SIZE * CELL_SIZE }}>
+                        <div className="game-overlay">
+                            <div className="game-over-content">
+                                <h2>Connexion requise</h2>
+                                <p>Vous devez être connecté pour jouer à ce mini-jeu.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -254,8 +254,8 @@ export default function SnakeGame({ onGameOver, onScoreSaved }) {
                     </div>
 
                     {snake.map((segment, index) => {
-                        const prev = previousSnakeRef.current[index] || segment
-                        const timeSinceMove = Date.now() - lastMoveTimeRef.current
+                        const prev = previousSnake[index] || segment
+                        const timeSinceMove = nowMs - lastMoveTime
                         const progress = Math.min(timeSinceMove / speed, 1)
                         
                         const dx = segment.x - prev.x

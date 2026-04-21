@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import useAdminCRUD from '../../hooks/useAdminCRUD'
 import { useDeferredUpload } from '../../hooks'
@@ -51,24 +50,6 @@ export default function GestionGames({ openAddModal = false, onModalOpened }) {
             game.name?.toLowerCase().includes(query.toLowerCase())
     })
 
-    useEffect(() => {
-        if (openAddModal && !isAdding && !editingId) {
-            handleOpenModal()
-            if (onModalOpened) onModalOpened()
-        }
-    }, [openAddModal])
-
-    useEffect(() => {
-        if (user?.role === 'admin') fetchItems()
-    }, [user])
-
-    const handleImageChange = (e, field) => {
-        const file = e.target.files?.[0]
-        if (!file) return
-        const blobUrl = handleFileSelect(field, file, '/api/line-ups/upload/lineup')
-        setFormData(prev => ({ ...prev, [field]: blobUrl }))
-    }
-
     const handleOpenModal = (game = null) => {
         if (game) {
             startEdit(game)
@@ -83,6 +64,28 @@ export default function GestionGames({ openAddModal = false, onModalOpened }) {
             startAdd()
             setFormData({ ...EMPTY_GAME })
         }
+    }
+
+    // Ouvrir automatiquement le modal quand la prop openAddModal passe à true
+    // Pattern setState-pendant-render avec guard pour éviter les cascades de renders
+    const [prevOpenAddModal, setPrevOpenAddModal] = useState(openAddModal)
+    if (openAddModal !== prevOpenAddModal) {
+        setPrevOpenAddModal(openAddModal)
+        if (openAddModal && !isAdding && !editingId) {
+            handleOpenModal()
+            if (onModalOpened) onModalOpened()
+        }
+    }
+
+    useEffect(() => {
+        if (user?.role === 'admin') fetchItems()
+    }, [user])
+
+    const handleImageChange = (e, field) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+        const blobUrl = handleFileSelect(field, file, '/api/line-ups/upload/lineup')
+        setFormData(prev => ({ ...prev, [field]: blobUrl }))
     }
 
     const handleCloseModal = () => {

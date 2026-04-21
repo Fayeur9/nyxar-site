@@ -52,24 +52,6 @@ export default function GestionSkins({ openAddModal = false, onModalOpened }) {
             skin.skin_maker?.toLowerCase().includes(query.toLowerCase())
     })
 
-    useEffect(() => {
-        if (openAddModal && !isAdding && !editingId) {
-            handleOpenModal()
-            if (onModalOpened) onModalOpened()
-        }
-    }, [openAddModal])
-
-    useEffect(() => {
-        if (user?.role === 'admin') fetchItems()
-    }, [user])
-
-    const handleImageChange = (e, field) => {
-        const file = e.target.files?.[0]
-        if (!file) return
-        const blobUrl = handleFileSelect(field, file, '/api/skins/upload')
-        setFormData(prev => ({ ...prev, [field]: blobUrl }))
-    }
-
     const handleOpenModal = (skin = null) => {
         if (skin) {
             startEdit(skin)
@@ -85,6 +67,28 @@ export default function GestionSkins({ openAddModal = false, onModalOpened }) {
             startAdd()
             setFormData({ ...EMPTY_SKIN })
         }
+    }
+
+    // Ouvrir automatiquement le modal quand la prop openAddModal passe à true
+    // Pattern setState-pendant-render avec guard pour éviter les cascades de renders
+    const [prevOpenAddModal, setPrevOpenAddModal] = useState(openAddModal)
+    if (openAddModal !== prevOpenAddModal) {
+        setPrevOpenAddModal(openAddModal)
+        if (openAddModal && !isAdding && !editingId) {
+            handleOpenModal()
+            if (onModalOpened) onModalOpened()
+        }
+    }
+
+    useEffect(() => {
+        if (user?.role === 'admin') fetchItems()
+    }, [user])
+
+    const handleImageChange = (e, field) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+        const blobUrl = handleFileSelect(field, file, '/api/skins/upload')
+        setFormData(prev => ({ ...prev, [field]: blobUrl }))
     }
 
     const handleCloseModal = () => {

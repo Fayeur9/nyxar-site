@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
-import { AuthContext } from '../../context/AuthContext.jsx'
+import { AuthContext } from '../../context/AuthContext'
 import { fetchCurrentGuessMap, submitGuessMapAnswer } from '../../services/guessMap'
 import './GuessMapGame.css'
 

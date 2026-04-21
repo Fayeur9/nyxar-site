@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { API_URL } from '../services/api'
 import { useFetch } from '../hooks'
@@ -9,19 +9,17 @@ import '../styles/pages/NotyPage.css'
 export default function PageNotyHallOfFame() {
     const { data: campaigns, loading, error } = useFetch('/api/noty/hall-of-fame')
     const [openCampaignId, setOpenCampaignId] = useState(null)
-    const initializedRef = useRef(false)
+    const [initialized, setInitialized] = useState(false)
 
     useEffect(() => {
         document.title = 'Hall of Fame — NOTY | Nyxar'
     }, [])
 
     // Ouvrir la première campagne une seule fois au chargement initial
-    useEffect(() => {
-        if (!initializedRef.current && campaigns?.length > 0) {
-            initializedRef.current = true
-            setOpenCampaignId(campaigns[0].id)
-        }
-    }, [campaigns])
+    if (!initialized && campaigns?.length > 0) {
+        setInitialized(true)
+        setOpenCampaignId(campaigns[0].id)
+    }
 
     const toggleCampaign = (id) => {
         setOpenCampaignId(prev => prev === id ? null : id)
@@ -172,11 +170,11 @@ function Pagination({ page, totalPages, setPage }) {
 }
 
 function HofCategoryCard({ category, campaignId, cardsAvailable }) {
-    const podium = category.podium || []
+    const podium = useMemo(() => category.podium || [], [category.podium])
     const [copied, setCopied] = useState(false)
 
-    const top3 = podium.slice(0, 3)
-    const rest = podium.slice(3)
+    const top3 = useMemo(() => podium.slice(0, 3), [podium])
+    const rest = useMemo(() => podium.slice(3), [podium])
 
     // Réorganiser : 2e - 1er - 3e
     const spots = [

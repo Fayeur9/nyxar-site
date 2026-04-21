@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { miniGames, getDefaultGameStatus } from '../../config/miniGamesConfig'
 import { API_URL } from '../../services/api'
-import { AuthContext } from '../../context/AuthContext.jsx'
+import { AuthContext } from '../../context/AuthContext'
 import { fetchMiniGamesSettings, updateMiniGameStatus } from '../../services/miniGames'
 import { fetchScoreboard, resetScores, deleteScore } from '../../services/scores'
 import { resetGuessMapAttempts } from '../../services/guessMap'
@@ -387,7 +387,7 @@ export default function GestionMiniJeuxTab() {
                                 <td colSpan={5}>Aucun mini-jeu trouvé.</td>
                             </tr>
                         ) : (
-                            paginatedMiniGames.map((game, index) => {
+                            paginatedMiniGames.map((game) => {
                                 const rawScoreboard = scoresByGame[game.slug] || []
                                 const displayScoreboard = game.slug === 'guess_map'
                                     ? buildGuessMapLeaderboard(rawScoreboard)

@@ -24,7 +24,7 @@ export default function SoundWavePlayer({ src, name = '', waveform = null }) {
             })
     ).current
 
-    const updateProgress = useCallback(() => {
+    const updateProgress = useCallback(function loop() {
         const audio = audioRef.current
         if (!audio) return
         if (audio.duration) {
@@ -33,7 +33,7 @@ export default function SoundWavePlayer({ src, name = '', waveform = null }) {
             setDuration(audio.duration)
         }
         if (!audio.paused) {
-            rafRef.current = requestAnimationFrame(updateProgress)
+            rafRef.current = requestAnimationFrame(loop)
         }
     }, [])
 

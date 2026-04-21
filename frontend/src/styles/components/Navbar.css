@@ -490,6 +490,55 @@
 {
     background: rgba(255, 107, 107, 0.15);
 }
+/* Dropdown utilisateur dans la sidebar mobile */
+.sidebar-user-dropdown-trigger
+{
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    color: white;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+.sidebar-user-dropdown-trigger:hover,
+.sidebar-user-dropdown-trigger.open
+{
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--accent-primary);
+}
+.sidebar-user-dropdown-trigger .user-avatar,
+.sidebar-user-dropdown-trigger .user-avatar-placeholder
+{
+    width: 40px;
+    height: 40px;
+}
+.sidebar-user-dropdown-trigger .user-name
+{
+    flex: 1;
+    font-weight: 600;
+}
+.sidebar-user-dropdown-trigger .dropdown-arrow
+{
+    flex-shrink: 0;
+}
+.sidebar-user-dropdown-menu
+{
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    animation: dropdownFadeIn 0.2s ease;
+}
 
 /* ===== Responsive - Tablet (< 1300px) ===== */
 @media (max-width: 1300px)

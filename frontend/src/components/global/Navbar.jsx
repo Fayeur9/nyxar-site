@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef } from 'react'
+import { useContext, useState, useEffect, useRef, useMemo } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 import { NotyCampaignContext } from '../../context/NotyCampaignContext'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
@@ -9,10 +9,10 @@ export default function Navbar() {
     const { hasActiveCampaign, hasPastCampaigns } = useContext(NotyCampaignContext)
     const navigate = useNavigate()
     const location = useLocation()
-    const [indicatorStyle, setIndicatorStyle] = useState({})
-    const [indicatorVisible, setIndicatorVisible] = useState(true)
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [mobileUserDropdownOpen, setMobileUserDropdownOpen] = useState(false)
+    const [prevPathname, setPrevPathname] = useState(location.pathname)
     const dropdownRef = useRef(null)
     const sidebarRef = useRef(null)
 
@@ -27,10 +27,12 @@ export default function Navbar() {
         return () => document.removeEventListener('mousedown', handleClickOutside)
     }, [])
 
-    // Fermer le menu mobile lors du changement de route
-    useEffect(() => {
+    // Fermer le menu mobile lors du changement de route — pattern setState pendant le render
+    if (prevPathname !== location.pathname) {
+        setPrevPathname(location.pathname)
         setMobileMenuOpen(false)
-    }, [location.pathname])
+        setMobileUserDropdownOpen(false)
+    }
 
     // Bloquer le scroll du body quand le menu mobile est ouvert
     useEffect(() => {
@@ -70,13 +72,13 @@ export default function Navbar() {
 
     const menuItems = getMenuItems()
 
-    useEffect(() => {
-        // Calculer dynamiquement la position de l'indicator
-        const visibleMenuItems = user
+    // Calculer dynamiquement la position de l'indicator (dérivé, pas besoin de state)
+    const { indicatorStyle, indicatorVisible } = useMemo(() => {
+        const filtered = user
             ? menuItems.filter(item => !item.authOnly || user)
             : menuItems.filter(item => !item.authOnly)
 
-        const activeIndex = visibleMenuItems.findIndex(item => {
+        const activeIndex = filtered.findIndex(item => {
             if (item.path === '/') {
                 return location.pathname === '/'
             }
@@ -85,16 +87,14 @@ export default function Navbar() {
         })
 
         if (activeIndex !== -1) {
-            // Page connue : afficher l'indicateur avec fade-in
-            setIndicatorVisible(true)
             // 80px (width) + 8px (margin-left) + 8px (margin-right) = 96px
-            const translateX = activeIndex * 96
-            setIndicatorStyle({ transform: `translateX(${translateX}px)` })
-        } else {
-            // Page non référencée : cacher l'indicateur avec fade-out
-            setIndicatorVisible(false)
+            return {
+                indicatorVisible: true,
+                indicatorStyle: { transform: `translateX(${activeIndex * 96}px)` }
+            }
         }
-    }, [location.pathname, user, hasActiveCampaign, hasPastCampaigns])
+        return { indicatorVisible: false, indicatorStyle: {} }
+    }, [location.pathname, user, menuItems])
 
     const handleLogout = () => {
         logout()
@@ -292,7 +292,12 @@ export default function Navbar() {
                     ))}
                 </nav>
                 <div className="sidebar-footer">
-                    <div className="sidebar-user-info">
+                    <button
+                        type="button"
+                        className={`sidebar-user-dropdown-trigger ${mobileUserDropdownOpen ? 'open' : ''}`}
+                        onClick={() => setMobileUserDropdownOpen(v => !v)}
+                        aria-expanded={mobileUserDropdownOpen}
+                    >
                         {user.image_url ? (
                             <img src={user.image_url} alt={user.username || 'User'} className="user-avatar" />
                         ) : (
@@ -301,15 +306,37 @@ export default function Navbar() {
                             </div>
                         )}
                         <span className="user-name">{user.username || user.email || 'Utilisateur'}</span>
-                    </div>
-                    <Link to="/profile" className="sidebar-link" onClick={() => setMobileMenuOpen(false)}>
-                        <span className="sidebar-icon">👤</span>
-                        <span className="sidebar-text">Mon profil</span>
-                    </Link>
-                    <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="sidebar-link logout">
-                        <span className="sidebar-icon">🚪</span>
-                        <span className="sidebar-text">Déconnexion</span>
+                        <svg className="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
                     </button>
+
+                    {mobileUserDropdownOpen && (
+                        <div className="sidebar-user-dropdown-menu">
+                            <Link
+                                to="/profile"
+                                className="dropdown-item"
+                                onClick={() => { setMobileMenuOpen(false); setMobileUserDropdownOpen(false) }}
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                Voir profil
+                            </Link>
+                            <button
+                                onClick={() => { handleLogout(); setMobileMenuOpen(false); setMobileUserDropdownOpen(false) }}
+                                className="dropdown-item logout"
+                            >
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                                Déconnexion
+                            </button>
+                        </div>
+                    )}
                 </div>
             </aside>
         </>

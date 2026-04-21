@@ -18,17 +18,6 @@ export default function FormLineUp() {
         return '/teams'
     }
 
-    // Vérifier si l'utilisateur est admin
-    if (user?.role !== 'admin') {
-        return (
-            <div className="l-form-page l-form-page--narrow">
-                <h1>Accès réservé</h1>
-                <p>Vous n'avez pas les droits nécessaires pour accéder à cette page.</p>
-                <button onClick={() => navigate('/')} className="btn-primary">Retour à l'accueil</button>
-            </div>
-        )
-    }
-
     const [error, setError] = useState(null)
     const [uploading, setUploading] = useState(false)
     const [games, setGames] = useState([])
@@ -42,6 +31,17 @@ export default function FormLineUp() {
     useEffect(() => {
         fetchGames()
     }, [])
+
+    // Vérifier si l'utilisateur est admin (après tous les hooks)
+    if (user?.role !== 'admin') {
+        return (
+            <div className="l-form-page l-form-page--narrow">
+                <h1>Accès réservé</h1>
+                <p>Vous n'avez pas les droits nécessaires pour accéder à cette page.</p>
+                <button onClick={() => navigate('/')} className="btn-primary">Retour à l'accueil</button>
+            </div>
+        )
+    }
 
     const fetchGames = async () => {
         try {

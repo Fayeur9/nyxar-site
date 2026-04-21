@@ -48,7 +48,7 @@ const UserManagementTable = () => {
         setError(null)
         try {
             await Promise.all([fetchUsers(), fetchRoles()])
-        } catch (err) {
+        } catch {
             // L'erreur est déjà stockée dans setError
         } finally {
             setTableLoading(false)

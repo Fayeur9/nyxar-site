@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { AuthProvider } from './context/AuthContext'
-import { NotyCampaignProvider } from './context/NotyCampaignContext'
+import { AuthProvider } from './context/AuthProvider'
+import { NotyCampaignProvider } from './context/NotyCampaignProvider'
 import './styles/global.css'
 import App from './App.jsx'
 

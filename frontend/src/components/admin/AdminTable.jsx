@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 
 export default function AdminTable({
     data,
@@ -15,10 +15,14 @@ export default function AdminTable({
 }) {
     const [currentPage, setCurrentPage] = useState(1)
 
-    // Reset page quand les données ou la recherche changent
-    useEffect(() => {
+    // Reset page quand les données ou la recherche changent — pattern setState pendant le render
+    const [prevDataLength, setPrevDataLength] = useState(data.length)
+    const [prevSearchQuery, setPrevSearchQuery] = useState(searchQuery)
+    if (prevDataLength !== data.length || prevSearchQuery !== searchQuery) {
+        setPrevDataLength(data.length)
+        setPrevSearchQuery(searchQuery)
         setCurrentPage(1)
-    }, [data.length, searchQuery])
+    }
 
     const paginated = itemsPerPage > 0
     const totalPages = paginated ? Math.ceil(data.length / itemsPerPage) : 1
