@@ -13,8 +13,7 @@ try {
     solutions = JSON.parse(readFileSync(join(DATA_DIR, 'wordle-solutions.json'), 'utf-8'))
     const validGuesses = JSON.parse(readFileSync(join(DATA_DIR, 'wordle-valid-guesses.json'), 'utf-8'))
     validGuessesSet = new Set(validGuesses)
-    console.log(`✓ Wordle : ${solutions.length} solutions, ${validGuessesSet.size} guesses valides`)
-} catch (err) {
+} catch {
     console.error('⚠ Impossible de charger les listes Wordle. Lancer : node scripts/generate-wordle-words.js')
 }
 

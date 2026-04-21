@@ -22,16 +22,6 @@ if (!process.env.DB_HOST && process.env.MYSQLHOST) {
 // Determine credentials based on the operating system
 const isLinux = os.platform() === 'linux';
 
-// Debug — dump des variables d'env BDD au démarrage (sans exposer le password)
-console.log('[DB DEBUG]', {
-    DB_HOST: process.env.DB_HOST || '(undefined)',
-    DB_PORT: process.env.DB_PORT || '(undefined)',
-    DB_NAME: process.env.DB_NAME || '(undefined)',
-    DB_USER: process.env.DB_USER || '(undefined)',
-    DB_PASSWORD_length: process.env.DB_PASSWORD ? process.env.DB_PASSWORD.length : 0,
-    NODE_ENV: process.env.NODE_ENV || '(undefined)',
-});
-
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
