@@ -8,7 +8,7 @@
     "dev:front": "npm run dev --prefix frontend -- --logLevel warn",
     "dev:back": "node --watch backend/server.js",
     "start": "node backend/server.js",
-    "build": "npm ci --prefix backend && npm ci --prefix frontend && npm run build --prefix frontend && mkdir -p backend/public && cp -R frontend/dist/. backend/public/ && echo '=== backend/public contents ===' && ls -la backend/public && echo '=== backend/public/assets contents ===' && ls -la backend/public/assets",
+    "build": "npm ci --prefix backend && npm ci --prefix frontend && npm run build --prefix frontend && mkdir -p backend/public && cp -R frontend/dist/. backend/public/",
     "db:init": "node backend/db-cli.js init",
     "db:purge": "node backend/db-cli.js purge",
     "db:setup": "node backend/db-cli.js setup",
