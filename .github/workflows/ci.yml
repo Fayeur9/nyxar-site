@@ -7,8 +7,37 @@ on:
     branches: [main, develop]
 
 jobs:
+  # ─────────────────────────────────────────────────────────
+  # 1. Qualité du code : ESLint sur le frontend React
+  # ─────────────────────────────────────────────────────────
+  lint:
+    name: Lint frontend (ESLint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Run ESLint
+        working-directory: frontend
+        run: npx eslint .
+
+  # ─────────────────────────────────────────────────────────
+  # 2. Tests d'intégration : Jest + Supertest + MySQL service
+  #    + publication du rapport coverage en artifact
+  # ─────────────────────────────────────────────────────────
   test:
-    name: Tests Jest (backend) + lint + audit
+    name: Tests d'intégration (Jest + MySQL)
     runs-on: ubuntu-latest
 
     services:
@@ -37,17 +66,12 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             backend/package-lock.json
-            frontend/package-lock.json
 
       - name: Install root dependencies
         run: npm ci
 
       - name: Install backend dependencies
         working-directory: backend
-        run: npm ci
-
-      - name: Install frontend dependencies
-        working-directory: frontend
         run: npm ci
 
       - name: Wait for MySQL to be ready
@@ -85,24 +109,111 @@ jobs:
         working-directory: backend
         run: node db-cli.js setup
 
-      - name: Run Jest integration tests
+      - name: Run Jest integration tests with coverage
         working-directory: backend
-        run: npm test
+        run: npm run test:coverage
 
-      - name: Lint frontend (ESLint)
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jest-coverage-report
+          path: backend/coverage/
+          retention-days: 30
+
+  # ─────────────────────────────────────────────────────────
+  # 3. Audit de sécurité : npm audit sur les 3 packages
+  #    (OWASP A06 — composants vulnérables)
+  # ─────────────────────────────────────────────────────────
+  security:
+    name: Audit sécurité (npm audit)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Install frontend dependencies
         working-directory: frontend
-        run: npx eslint .
+        run: npm ci
 
       - name: Security audit — root
         run: npm audit --audit-level=high
-        continue-on-error: true
 
       - name: Security audit — backend
         working-directory: backend
         run: npm audit --audit-level=high
-        continue-on-error: true
 
       - name: Security audit — frontend
         working-directory: frontend
         run: npm audit --audit-level=high
-        continue-on-error: true
+
+  # ─────────────────────────────────────────────────────────
+  # 4. Analyse statique SAST : CodeQL sur le code JavaScript
+  #    (OWASP A03 — injection, patterns vulnérables)
+  # ─────────────────────────────────────────────────────────
+  codeql:
+    name: Analyse SAST (CodeQL)
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript"
+
+  # ─────────────────────────────────────────────────────────
+  # 5. Build : vérifier que `npm run build` produit bien les
+  #    assets dans backend/public (reproduit le build Railway)
+  #    Gated par Lint + Tests (ne tourne que si les deux verts)
+  # ─────────────────────────────────────────────────────────
+  build:
+    name: Build (Vite → backend/public)
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Build (install deps + vite build + copy to backend/public)
+        run: npm run build
