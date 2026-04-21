@@ -1,18 +1,12 @@
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const UPLOADS_BASE = path.join(__dirname, '../../frontend/public/uploads')
+import { UPLOADS_BASE_PATH } from './uploadsPath.js'
 
 // Arborescence complète des dossiers uploads
 const UPLOAD_DIRS = [
     'categories',
     'competitions',
     'games',
-    'guess-map',
     'herobanner',
     'line_ups',
     'noty/campaign',
@@ -32,7 +26,7 @@ const UPLOAD_DIRS = [
 export function ensureUploadDirectories() {
     let created = 0
     for (const dir of UPLOAD_DIRS) {
-        const fullPath = path.join(UPLOADS_BASE, dir)
+        const fullPath = path.join(UPLOADS_BASE_PATH, dir)
         if (!fs.existsSync(fullPath)) {
             fs.mkdirSync(fullPath, { recursive: true })
             created++

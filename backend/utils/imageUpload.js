@@ -1,12 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-// Chemin de base pour les uploads
-const UPLOADS_BASE_PATH = path.join(__dirname, '../../frontend/public/uploads')
+import { UPLOADS_BASE_PATH } from './uploadsPath.js'
 
 /**
  * S'assure que le dossier d'upload existe
@@ -80,7 +74,9 @@ export const deleteImageFile = (imageUrl, expectedFolder = null) => {
         return false
     }
 
-    const imagePath = path.join(__dirname, '../../frontend/public', imageUrl)
+    // Reconstruire le chemin physique à partir de l'URL : /uploads/games/xxx.png → UPLOADS_BASE_PATH/games/xxx.png
+    const relativePath = imageUrl.replace(/^\/uploads\//, '')
+    const imagePath = path.join(UPLOADS_BASE_PATH, relativePath)
 
     if (fs.existsSync(imagePath)) {
         try {

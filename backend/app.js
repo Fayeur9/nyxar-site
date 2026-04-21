@@ -25,6 +25,7 @@ import scoresRoutes from './routes/scores.js'
 import scoreboardRoutes from './routes/scoreboard.js'
 import wordleRoutes from './routes/wordle.js'
 import miniGamesRoutes from './routes/mini_games.js'
+import { UPLOADS_BASE_PATH } from './utils/uploadsPath.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -71,10 +72,7 @@ app.use(fileUpload({
     responseOnLimit: 'Le fichier dépasse la limite de 50 Mo'
 }))
 
-const uploadsPath = process.env.NODE_ENV === 'production'
-    ? path.join(__dirname, 'public/uploads')
-    : path.join(__dirname, '../frontend/public/uploads')
-app.use('/uploads', express.static(uploadsPath))
+app.use('/uploads', express.static(UPLOADS_BASE_PATH))
 
 const frontendBuildPath = process.env.NODE_ENV === 'production'
     ? path.join(__dirname, 'public')
