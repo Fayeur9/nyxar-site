@@ -691,84 +691,6 @@ export async function createWordleStatsTable() {
     }
 }
 
-// Créer la table guess_map_challenges
-export async function createGuessMapChallengesTable() {
-    try {
-        // Récupérer le nom réel de la base utilisée par la connexion
-        const [[{ db: currentDb }]] = await pool.query('SELECT DATABASE() AS db')
-        const dbName = currentDb || process.env.DB_NAME || 'nyxar_db'
-
-        // Vérifier si la table existe
-        const [tables] = await pool.query(
-            "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'guess_map_challenges'",
-            [dbName]
-        )
-
-        if (tables.length > 0) {
-            // Table existe, vérifier si elle a les mauvaises colonnes
-            const [columns] = await pool.query(
-                "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'guess_map_challenges'",
-                [dbName]
-            )
-
-            const columnNames = columns.map(c => c.COLUMN_NAME)
-
-            // Si elle a 'image_url' (ancien schéma), la recréer
-            if (columnNames.includes('image_url')) {
-                console.log('🔄 Migration: Ancien schéma détecté, recréation de la table...')
-                await pool.query('DROP TABLE IF EXISTS guess_map_challenges')
-            } else {
-                // Schéma correct, rien à faire
-                console.log('✓ Table guess_map_challenges (schéma correct)')
-                return
-            }
-        }
-
-        // Créer la table avec le bon schéma
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS guess_map_challenges (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                challenge_date DATE NOT NULL,
-                difficulty ENUM('offert','facile','moyen','difficile','introuvable') NOT NULL DEFAULT 'moyen',
-                tmx_id VARCHAR(100) NOT NULL,
-                tmx_url VARCHAR(500),
-                image_mime VARCHAR(100),
-                image_data LONGBLOB,
-                created_by INT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                UNIQUE KEY uniq_challenge_date (challenge_date),
-                FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
-            )
-        `)
-        console.log('✓ Table guess_map_challenges créée')
-    } catch (error) {
-        console.error('Erreur création table guess_map_challenges:', error)
-    }
-}
-
-// Créer la table guess_map_attempts (historique des tentatives)
-export async function createGuessMapAttemptsTable() {
-    try {
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS guess_map_attempts (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                challenge_id INT NOT NULL,
-                user_id INT NOT NULL,
-                guess VARCHAR(100) NOT NULL,
-                is_correct TINYINT DEFAULT 0,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (challenge_id) REFERENCES guess_map_challenges(id) ON DELETE CASCADE,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-                INDEX idx_challenge_user (challenge_id, user_id)
-            )
-        `)
-        console.log('✓ Table guess_map_attempts créée')
-    } catch (error) {
-        console.error('Erreur création table guess_map_attempts:', error)
-    }
-}
-
 // ============ CRÉATION INTELLIGENTE DE TOUTES LES TABLES ============
 
 // Creer toutes les tables dans le bon ordre (intelligemment)
@@ -805,8 +727,6 @@ export async function createAllTables() {
         { name: 'daily_words', create: createDailyWordsTable },
         { name: 'wordle_games', create: createWordleGamesTable },
         { name: 'wordle_stats', create: createWordleStatsTable },
-        { name: 'guess_map_challenges', create: createGuessMapChallengesTable },
-        { name: 'guess_map_attempts', create: createGuessMapAttemptsTable },
         { name: 'mini_game_settings', create: createMiniGamesSettingsTable },
     ]
 
@@ -1216,8 +1136,6 @@ export async function purgeAllData() {
     const tables = [
         'wordle_games',
         'wordle_stats',
-        'guess_map_attempts',
-        'guess_map_challenges',
         'daily_words',
         'mini_game_settings',
         'scores',

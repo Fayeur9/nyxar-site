@@ -1,16 +1,13 @@
 import { useState, useEffect, useContext, useMemo, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { miniGames, getDefaultGameStatus } from '../../config/miniGamesConfig'
 import { API_URL } from '../../services/api'
 import { AuthContext } from '../../context/AuthContext'
 import { fetchMiniGamesSettings, updateMiniGameStatus } from '../../services/miniGames'
 import { fetchScoreboard, resetScores, deleteScore } from '../../services/scores'
-import { resetGuessMapAttempts } from '../../services/guessMap'
 import '../../styles/pages/AdminMiniJeuxTab.css'
 
 export default function GestionMiniJeuxTab() {
     const { token } = useContext(AuthContext)
-    const navigate = useNavigate()
 
     const [gameStatus, setGameStatus] = useState(getDefaultGameStatus())
     const [gameOrder, setGameOrder] = useState({})
@@ -27,20 +24,6 @@ export default function GestionMiniJeuxTab() {
     const [error, setError] = useState(null)
     const [searchQuery, setSearchQuery] = useState('')
     const [showWordleConfig, setShowWordleConfig] = useState(false)
-
-    const buildGuessMapLeaderboard = useCallback((entries = []) => {
-        return entries
-            .filter((entry) => entry?.attempts)
-            .sort((a, b) => {
-                const pointsA = (a.latest_points ?? a.score ?? 0)
-                const pointsB = (b.latest_points ?? b.score ?? 0)
-                if (pointsA !== pointsB) return pointsB - pointsA
-                const attemptsA = a.attempts ?? Number.MAX_SAFE_INTEGER
-                const attemptsB = b.attempts ?? Number.MAX_SAFE_INTEGER
-                if (attemptsA !== attemptsB) return attemptsA - attemptsB
-                return (a.username || '').localeCompare(b.username || '')
-            })
-    }, [])
 
     const applyServerData = useCallback((data) => {
         if (!data) return
@@ -238,33 +221,6 @@ export default function GestionMiniJeuxTab() {
         setShowConfirmModal(true)
     }
 
-    const resetGuessMapTries = (game, entry) => {
-        if (game.slug !== 'guess_map' || !entry?.user_id) return
-        setConfirmAction({
-            type: 'resetGuessMapAttempts',
-            title: `Réinitialiser les essais de ${entry.username || 'Compte inconnu'} ?`,
-            message: 'Cet utilisateur pourra rejouer le défi Guess the Map en cours.',
-            action: async () => {
-                if (!token) {
-                    setError('Authentification requise pour réinitialiser les essais.')
-                    return
-                }
-                setPendingAction(true)
-                setError(null)
-                try {
-                    await resetGuessMapAttempts(entry.user_id, token)
-                    await loadScoresForGame(game.slug)
-                    setShowConfirmModal(false)
-                } catch (err) {
-                    setError(err.message)
-                } finally {
-                    setPendingAction(false)
-                }
-            }
-        })
-        setShowConfirmModal(true)
-    }
-
     const resetAllRecords = () => {
         setConfirmAction({
             type: 'resetAll',
@@ -388,14 +344,8 @@ export default function GestionMiniJeuxTab() {
                             </tr>
                         ) : (
                             paginatedMiniGames.map((game) => {
-                                const rawScoreboard = scoresByGame[game.slug] || []
-                                const displayScoreboard = game.slug === 'guess_map'
-                                    ? buildGuessMapLeaderboard(rawScoreboard)
-                                    : rawScoreboard
-                                const bestRecord = displayScoreboard[0]
-                                const displayScoreValue = game.slug === 'guess_map'
-                                    ? bestRecord?.latest_points ?? bestRecord?.score
-                                    : bestRecord?.score
+                                const scoreboard = scoresByGame[game.slug] || []
+                                const bestRecord = scoreboard[0]
                                 const isActive = gameStatus[game.slug] !== false
                                 const isSaving = statusSaving === game.slug
                                 return (
@@ -424,12 +374,7 @@ export default function GestionMiniJeuxTab() {
                                         </td>
                                         <td>
                                             <span className="score-value">
-                                                {bestRecord ? (
-                                                    <>
-                                                        {displayScoreValue} {game.scoreUnit}
-                                                        {game.slug === 'guess_map' && bestRecord.attempts ? ` • ${bestRecord.attempts} essai${bestRecord.attempts > 1 ? 's' : ''}` : ''}
-                                                    </>
-                                                ) : '-'}
+                                                {bestRecord ? `${bestRecord.score} ${game.scoreUnit}` : '-'}
                                             </span>
                                         </td>
                                         <td>
@@ -450,20 +395,12 @@ export default function GestionMiniJeuxTab() {
                                                     >
                                                         ⚙️
                                                     </button>
-                                                ) : game.component === 'guessMap' ? (
-                                                    <button
-                                                        className="action-btn guessmap-gear-btn"
-                                                        onClick={() => navigate('/week-planner')}
-                                                        title="Planifier la semaine"
-                                                    >
-                                                        📅
-                                                    </button>
                                                 ) : (
                                                     <span className="wordle-gear-placeholder" aria-hidden="true" />
                                                 )}
                                                 <button
                                                     className="action-btn details-btn"
-                                                    onClick={() => openDetails(game, displayScoreboard)}
+                                                    onClick={() => openDetails(game, scoreboard)}
                                                     title="Voir les détails"
                                                 >
                                                     📊 Détails
@@ -471,7 +408,7 @@ export default function GestionMiniJeuxTab() {
                                                 <button
                                                     className="action-btn reset-btn"
                                                     onClick={() => resetGameRecords(game)}
-                                                    disabled={rawScoreboard.length === 0}
+                                                    disabled={scoreboard.length === 0}
                                                     title="Réinitialiser"
                                                 >
                                                     🔄 Reset
@@ -533,21 +470,8 @@ export default function GestionMiniJeuxTab() {
                                                     <span className="record-rank">#{index + 1}</span>
                                                     <span className="record-player">{entry.username || 'Compte inconnu'}</span>
                                                     <span className="record-score">
-                                                        {confirmAction.game.slug === 'guess_map'
-                                                            ? (entry.latest_points ?? entry.score)
-                                                            : entry.score}{' '}
-                                                        {confirmAction.game.scoreUnit}
-                                                        {confirmAction.game.slug === 'guess_map' && entry.attempts ? ` • ${entry.attempts} essai${entry.attempts > 1 ? 's' : ''}` : ''}
+                                                        {entry.score} {confirmAction.game.scoreUnit}
                                                     </span>
-                                                    {confirmAction.game.slug === 'guess_map' && canDeleteEntry && (
-                                                        <button
-                                                            className="guessmap-reset-btn"
-                                                            onClick={() => resetGuessMapTries(confirmAction.game, entry)}
-                                                            title="Réinitialiser les essais Guess the Map"
-                                                        >
-                                                            🔄 Essais
-                                                        </button>
-                                                    )}
                                                     {canDeleteEntry && (
                                                         <button
                                                             className="delete-record-btn"

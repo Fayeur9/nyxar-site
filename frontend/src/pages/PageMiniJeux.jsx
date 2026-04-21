@@ -116,20 +116,6 @@ export default function PageMiniJeux() {
         return orderedMiniGames.filter((game) => gameStatus[game.slug] !== false)
     }, [orderedMiniGames, gameStatus])
 
-    const buildGuessMapDailyScores = (entries = []) => {
-        return entries
-            .filter((entry) => entry?.attempts)
-            .sort((a, b) => {
-                const pointsA = (a.latest_points ?? a.score ?? 0)
-                const pointsB = (b.latest_points ?? b.score ?? 0)
-                if (pointsA !== pointsB) return pointsB - pointsA
-                const attemptsA = a.attempts ?? Number.MAX_SAFE_INTEGER
-                const attemptsB = b.attempts ?? Number.MAX_SAFE_INTEGER
-                if (attemptsA !== attemptsB) return attemptsA - attemptsB
-                return (a.username || '').localeCompare(b.username || '')
-            })
-    }
-
     const renderLeaderboardContent = () => {
         if (selectedLeaderboardGame === null) {
             if (generalLeaderboard.length === 0) {
@@ -158,43 +144,27 @@ export default function PageMiniJeux() {
             )
         }
 
-        let scoreboard = scoresByGame[selectedLeaderboardGame] || []
-        if (selectedLeaderboardGame === 'guess_map') {
-            scoreboard = buildGuessMapDailyScores(scoreboard)
-        }
-        scoreboard = scoreboard.slice(0, 15)
+        const scoreboard = (scoresByGame[selectedLeaderboardGame] || []).slice(0, 15)
         const game = miniGames.find((g) => g.slug === selectedLeaderboardGame)
         if (!scoreboard.length) {
             return <p className="no-scores">Aucun score enregistré pour ce jeu</p>
         }
         return (
             <div className="leaderboard-list">
-                {scoreboard.map((entry, index) => {
-                    const attemptsText = selectedLeaderboardGame === 'guess_map' && entry.attempts
-                        ? `${entry.attempts} essai${entry.attempts > 1 ? 's' : ''}`
-                        : null
-                    return (
-                        <div key={entry.user_id || index} className={`leaderboard-item ${index < 3 ? 'top-' + (index + 1) : ''}`}>
-                            <div className="rank">
-                                {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
-                            </div>
-                            <div className="player-info">
-                                <span className="player-name">{entry.username || 'Compte inconnu'}</span>
-                            </div>
-                            <div className="score-info">
-                                <span className="score">
-                                    {selectedLeaderboardGame === 'guess_map'
-                                        ? entry.latest_points ?? entry.score
-                                        : entry.score}
-                                </span>
-                                <span className="unit">
-                                    {game?.scoreUnit || 'points'}
-                                    {attemptsText ? ` • ${attemptsText}` : ''}
-                                </span>
-                            </div>
+                {scoreboard.map((entry, index) => (
+                    <div key={entry.user_id || index} className={`leaderboard-item ${index < 3 ? 'top-' + (index + 1) : ''}`}>
+                        <div className="rank">
+                            {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
                         </div>
-                    )
-                })}
+                        <div className="player-info">
+                            <span className="player-name">{entry.username || 'Compte inconnu'}</span>
+                        </div>
+                        <div className="score-info">
+                            <span className="score">{entry.score}</span>
+                            <span className="unit">{game?.scoreUnit || 'points'}</span>
+                        </div>
+                    </div>
+                ))}
             </div>
         )
     }
@@ -225,18 +195,8 @@ export default function PageMiniJeux() {
             ) : (
                 <div className="mini-games-grid">
                     {visibleMiniGames.map((game) => {
-                        const rawScores = scoresByGame[game.slug] || []
-                        const displayScores = game.slug === 'guess_map'
-                            ? buildGuessMapDailyScores(rawScores)
-                            : rawScores
-                        const topScore = displayScores[0]
+                        const topScore = (scoresByGame[game.slug] || [])[0]
                         const gameKey = game.scoreboardKey || game.component || game.slug || String(game.id)
-                        const attemptsLabel = game.slug === 'guess_map' && topScore?.attempts
-                            ? `${topScore.attempts} essai${topScore.attempts > 1 ? 's' : ''}`
-                            : null
-                        const displayPoints = game.slug === 'guess_map'
-                            ? topScore?.latest_points ?? topScore?.score
-                            : topScore?.score
                         return (
                             <div
                                 key={game.id}
@@ -252,8 +212,7 @@ export default function PageMiniJeux() {
                                         <>
                                             <span className="record-label">🏆 Record:</span>
                                             <span className="record-value">
-                                                {displayPoints} {game.scoreUnit}
-                                                {attemptsLabel ? ` • ${attemptsLabel}` : ''}
+                                                {topScore.score} {game.scoreUnit}
                                             </span>
                                             <span className="record-holder">par {topScore.username || 'Compte inconnu'}</span>
                                         </>

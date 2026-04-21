@@ -1,20 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import SnakeGame from '../components/games/SnakeGame'
-import BasketballGame from '../components/games/BasketballGame'
 import MemoryGame from '../components/games/MemoryGame'
 import WordleGame from '../components/games/wordle/WordleGame'
-import GuessMapGame from '../components/games/GuessMapGame'
 import { miniGames, getDefaultGameStatus } from '../config/miniGamesConfig'
 import { fetchMiniGamesSettings } from '../services/miniGames'
 import '../styles/pages/PageMiniJeuPlay.css'
 
 const componentsMap = {
   memory: MemoryGame,
-  snake: SnakeGame,
-  basketball: BasketballGame,
-  wordle: WordleGame,
-  guessMap: GuessMapGame
+  wordle: WordleGame
 }
 
 const GAME_LOGO_SRC = '/nyxar-games-loader.png'

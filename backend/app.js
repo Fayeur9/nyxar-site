@@ -24,7 +24,6 @@ import herobannerRoutes from './routes/herobanner.js'
 import scoresRoutes from './routes/scores.js'
 import scoreboardRoutes from './routes/scoreboard.js'
 import wordleRoutes from './routes/wordle.js'
-import guessMapRoutes from './routes/guess_map.js'
 import miniGamesRoutes from './routes/mini_games.js'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -102,7 +101,6 @@ app.use('/api/herobanner', herobannerRoutes)
 app.use('/api/scores', scoresRoutes)
 app.use('/api/scoreboard', scoreboardRoutes)
 app.use('/api/wordle', wordleRoutes)
-app.use('/api/guess-map', guessMapRoutes)
 app.use('/api/mini-games', miniGamesRoutes)
 
 app.get('/api/health', (req, res) => {

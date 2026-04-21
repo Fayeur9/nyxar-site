@@ -16,7 +16,6 @@ import PageInsaLan2026 from './pages/PageInsaLan2026'
 import PageSkins from './pages/PageSkins'
 import PageMiniJeux from './pages/PageMiniJeux'
 import PageMiniJeuPlay from './pages/PageMiniJeuPlay'
-import PageWeekPlanner from './pages/PageWeekPlanner'
 import Page404 from './pages/Page404'
 
 // Pages de formulaire (Form*)
@@ -102,14 +101,6 @@ function AppContent() {
                 <>
                   <Route path="/profile" element={<FormProfile />} />
                   <Route path="/profile/change-password" element={<FormPassword />} />
-                  <Route
-                    path="/week-planner"
-                    element={(
-                      <PermissionRoute permission="manageGames">
-                        <PageWeekPlanner />
-                      </PermissionRoute>
-                    )}
-                  />
                   <Route
                     path="/admin/users"
                     element={(
