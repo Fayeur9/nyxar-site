@@ -33,11 +33,6 @@ DB_PASSWORD=votre_password
 JWT_SECRET=votre_clé_secrète_jwt
 PORT=5176
 NODE_ENV=development
-
-# Mots de passe des comptes spéciaux (seed)
-SEED_ADMIN_PASSWORD=admin25
-SEED_NYXAR_PASSWORD=nyxar25
-SEED_USER_PASSWORD=user25
 ```
 
 Pour forcer l'URL de l'API en frontend, créer `frontend/.env` :
@@ -141,9 +136,6 @@ nyxar-site/
 | `PORT` | Port du backend | `5176` |
 | `NODE_ENV` | Environnement | `development` |
 | `ALLOWED_ORIGINS` | CORS whitelist (virgules) | — |
-| `SEED_ADMIN_PASSWORD` | Mot de passe compte admin | `admin25` |
-| `SEED_NYXAR_PASSWORD` | Mot de passe compte nyxar | `nyxar25` |
-| `SEED_USER_PASSWORD` | Mot de passe compte user | `user25` |
 
 ## Module NOTY
 
