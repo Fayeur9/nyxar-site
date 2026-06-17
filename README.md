@@ -1,4 +1,4 @@
-# NYXAR — Plateforme E-sport
+# NYXAR - Plateforme E-sport
 
 Plateforme web de la team NYXAR : gestion des joueurs, line-ups, compétitions, résultats et système de vote NOTY Awards.
 
@@ -130,20 +130,20 @@ nyxar-site/
 | `DB_HOST` | Host MySQL | `localhost` |
 | `DB_PORT` | Port MySQL | `3306` |
 | `DB_NAME` | Nom de la base | `nyxar_db` |
-| `DB_USER` | Utilisateur MySQL | — |
-| `DB_PASSWORD` | Mot de passe MySQL | — |
-| `JWT_SECRET` | Clé de signature JWT | — |
+| `DB_USER` | Utilisateur MySQL | - |
+| `DB_PASSWORD` | Mot de passe MySQL | - |
+| `JWT_SECRET` | Clé de signature JWT | - |
 | `PORT` | Port du backend | `5176` |
 | `NODE_ENV` | Environnement | `development` |
-| `ALLOWED_ORIGINS` | CORS whitelist (virgules) | — |
+| `ALLOWED_ORIGINS` | CORS whitelist (virgules) | - |
 
 ## Module NOTY
 
 Système de vote et récompenses annuelles. Accessible sous `/noty/*`.
 
 Phases gérées par `NotyCampaignContext` :
-- **Votes ouverts** — les nyxariens votent pour leurs catégories
-- **Phase résultats** — les résultats sont visibles, votes fermés
-- **Inactif** — aucune campagne active
+- **Votes ouverts** - les nyxariens votent pour leurs catégories
+- **Phase résultats** - les résultats sont visibles, votes fermés
+- **Inactif** - aucune campagne active
 
 Les routes backend sont découpées en 5 fichiers sous `/api/noty` : campagnes, catégories, votes, stats, cards.
